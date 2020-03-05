@@ -45,7 +45,7 @@ public class VACalendarView: UIScrollView {
     public var selectionStyle: VASelectionStyle = .single
     
     private var calculatedWeekHeight: CGFloat = 100
-    private let calendar: VACalendar
+    var calendar: VACalendar
     private var monthViews = [VAMonthView]()
     private let maxNumberOfWeek = 6
     private let numberDaysInWeek = 7
@@ -66,6 +66,18 @@ public class VACalendarView: UIScrollView {
         self.calendar = calendar
         
         super.init(frame: frame)
+    }
+    
+    public func setCalendar(calendar: VACalendar){
+        
+        for view in monthViews{
+            view.subviews.forEach({ $0.removeFromSuperview() })
+        }
+        
+        monthViews = []
+
+        
+        self.calendar = calendar
     }
     
     public required init?(coder aDecoder: NSCoder) {
