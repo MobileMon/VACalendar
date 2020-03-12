@@ -85,6 +85,11 @@ public class VACalendar {
         }
     }
     
+    func clearSupplementaries(){
+        let days = months.flatMap { $0.allDays() }
+        days.forEach { $0.set([])}
+    }
+    
     func setSupplementaries(_ data: [(Date, [VADaySupplementary])]) {
         let dates = data.map { $0.0 }
         let days = months.flatMap { $0.days(for: dates) }
