@@ -127,6 +127,10 @@ public class VACalendarView: UIScrollView {
         calendar.setDaysAvailability(availability)
     }
     
+    public func clearSupplementaries(){
+        calendar.clearSupplementaries()
+    }
+    
     public func setSupplementaries(_ data: [(Date, [VADaySupplementary])]) {
         calendar.setSupplementaries(data)
     }
