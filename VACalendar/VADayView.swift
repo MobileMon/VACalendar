@@ -12,6 +12,10 @@ import UIKit
 public protocol VADayViewAppearanceDelegate: class {
     @objc optional func font(for state: VADayState) -> UIFont
     @objc optional func textColor(for state: VADayState) -> UIColor
+    @objc optional func shouldColorToday() -> Bool
+    @objc optional func textColorForToday() -> UIColor
+    @objc optional func fontForToday() -> UIFont
+    @objc optional func backgroundColorForToday() -> UIColor
     @objc optional func textBackgroundColor(for state: VADayState) -> UIColor
     @objc optional func backgroundColor(for state: VADayState) -> UIColor
     @objc optional func borderWidth(for state: VADayState) -> CGFloat
@@ -53,7 +57,7 @@ class VADayView: UIView {
         super.init(frame: .zero)
         
         self.day.stateChanged = { [weak self] state in
-            self?.setState(state)
+            self?.setState(state, day: day.date)
         }
         
         self.day.supplementariesDidUpdate = { [weak self] in
@@ -83,7 +87,7 @@ class VADayView: UIView {
         )
         dateLabel.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
 
-        setState(day.state)
+        setState(day.state, day: day.date)
         addSubview(dateLabel)
         updateSupplementaryViews()
     }
@@ -94,7 +98,7 @@ class VADayView: UIView {
         delegate?.dayStateChanged(day)
     }
     
-    private func setState(_ state: VADayState) {
+    private func setState(_ state: VADayState, day: Date) {
         if dayViewAppearanceDelegate?.shape?() == .circle && state == .selected {
             dateLabel.clipsToBounds = true
             dateLabel.layer.cornerRadius = dateLabel.frame.height / 2
@@ -108,7 +112,19 @@ class VADayView: UIView {
         dateLabel.backgroundColor = dayViewAppearanceDelegate?.textBackgroundColor?(for: state) ?? dateLabel.backgroundColor
         
         updateSupplementaryViews()
+        
+        
+        if day.isToday() && dayViewAppearanceDelegate?.shouldColorToday?() ?? false && state != .selected{
+            dateLabel.textColor = dayViewAppearanceDelegate?.textColorForToday?() ?? dateLabel.textColor
+            dateLabel.backgroundColor = dayViewAppearanceDelegate?.backgroundColorForToday?() ?? dateLabel.backgroundColor
+            dateLabel.font = dayViewAppearanceDelegate?.fontForToday?() ?? dateLabel.font
+        }
     }
+    
+   
+    
+    
+    
     
     private func updateSupplementaryViews() {
         removeAllSupplementaries()
@@ -140,3 +156,33 @@ class VADayView: UIView {
     }
     
 }
+
+extension Date {
+       func isToday() -> Bool {
+           return self.isDateSameDay(Date())
+       }
+       
+       func isDateSameDay(_ date: Date) -> Bool {
+           
+           return (self.day() == date.day()) && (self.month() == date.month() && (self.year() == date.year()))
+           
+       }
+    
+        func day() -> Int {
+            let calendar = Calendar.current
+            let dateComponent = (calendar as NSCalendar).components(.day, from: self)
+            return dateComponent.day!
+        }
+    
+        func month() -> Int {
+            let calendar = Calendar.current
+            let dateComponent = (calendar as NSCalendar).components(.month, from: self)
+            return dateComponent.month!
+        }
+    
+        func year() -> Int {
+            let calendar = Calendar.current
+            let dateComponent = (calendar as NSCalendar).components(.year, from: self)
+            return dateComponent.year!
+        }
+   }
