@@ -113,12 +113,12 @@ class VADayView: UIView {
         
         updateSupplementaryViews()
         
-        
-        if day.isToday() && dayViewAppearanceDelegate?.shouldColorToday?() ?? false && state != .selected{
+        if day.isToday(){
             dateLabel.textColor = dayViewAppearanceDelegate?.textColorForToday?() ?? dateLabel.textColor
             dateLabel.backgroundColor = dayViewAppearanceDelegate?.backgroundColorForToday?() ?? dateLabel.backgroundColor
             dateLabel.font = dayViewAppearanceDelegate?.fontForToday?() ?? dateLabel.font
         }
+       
     }
     
    
