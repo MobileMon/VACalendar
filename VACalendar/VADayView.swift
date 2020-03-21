@@ -117,14 +117,17 @@ class VADayView: UIView {
             dateLabel.textColor = dayViewAppearanceDelegate?.textColorForToday?() ?? dateLabel.textColor
             dateLabel.backgroundColor = dayViewAppearanceDelegate?.backgroundColorForToday?() ?? dateLabel.backgroundColor
             dateLabel.font = dayViewAppearanceDelegate?.fontForToday?() ?? dateLabel.font
+            
+            if dayViewAppearanceDelegate?.shape?() == .circle{
+                dateLabel.clipsToBounds = true
+                dateLabel.layer.cornerRadius = dateLabel.frame.height / 2
+            }
+            
         }
        
     }
     
    
-    
-    
-    
     
     private func updateSupplementaryViews() {
         removeAllSupplementaries()
